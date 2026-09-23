@@ -51,29 +51,29 @@
 
     - **Infrastructure as a Service (IaaS)**: IaaS provides the basic infrastructure needed to run applications, such as virtual machines, storage, and networking. The cloud provider manages the physical hardware, while the user manages the operating system, applications, and data.
 
-    **Example:** Amazon EC2 allows users to create virtual servers in the cloud.
+        **Example:** Amazon EC2 allows users to create virtual servers in the cloud.
 
-    **Use case:** A company can use IaaS to host its website without purchasing and maintaining physical servers.
+        **Use case:** A company can use IaaS to host its website without purchasing and maintaining physical servers.
 
     - **Platform as a Service (PaaS)**: PaaS provides developers with an environment where they can build, test, and deploy applications. The provider manages the servers, operating system, and much of the underlying infrastructure.
 
-    **Example:** Google App Engine.
+        **Example:** Google App Engine.
 
-    **Use case:** A developer can deploy a web application without having to configure and maintain the servers running it.
+        **Use case:** A developer can deploy a web application without having to configure and maintain the servers running it.
 
     - **Software as a Service (SaaS)**: SaaS provides a complete software application through the internet. Users do not need to install or manage the underlying infrastructure or software.
 
-    **Example:** Gmail or Microsoft 365.
+        **Example:** Gmail or Microsoft 365.
 
-    **Use case:** An organization can use cloud-based email and office applications without installing and maintaining the software on its own servers.
+        **Use case:** An organization can use cloud-based email and office applications without installing and maintaining the software on its own servers.
 
-    In simple terms:
+        In simple terms:
 
-    IaaS = rent the infrastructure.
+        IaaS = rent the infrastructure.
 
-    PaaS = rent the development platform.
+        PaaS = rent the development platform.
 
-    SaaS = use the finished software.
+        SaaS = use the finished software.
 
 3. **Cloud Deployment Models**
 
@@ -91,23 +91,23 @@
 
     - **Public Cloud**: A public cloud is operated by a cloud provider, such as Amazon Web Services, Microsoft Azure, or Google Cloud. Organizations rent the resources they need instead of purchasing physical servers.
 
-    Scenario: A small business could use a public cloud to host its website because it is cheaper and easier to scale than buying its own servers.
+        Scenario: A small business could use a public cloud to host its website because it is cheaper and easier to scale than buying its own servers.
 
     - **Private Cloud**: A private cloud is designed for the exclusive use of one organization. It provides greater control over infrastructure, security, and data.
 
-    Scenario: A bank or government organization may use a private cloud when it needs strict control over sensitive customer or government information.
+        Scenario: A bank or government organization may use a private cloud when it needs strict control over sensitive customer or government information.
 
     - **Hybrid Cloud**: A hybrid cloud combines private and public cloud infrastructure. Organizations can keep sensitive workloads in their private environment while using the public cloud for less sensitive or high-demand workloads.
 
-    Scenario: An organization could keep its customer database on a private cloud but use a public cloud to host its website and handle increased traffic.
+        Scenario: An organization could keep its customer database on a private cloud but use a public cloud to host its website and handle increased traffic.
 
-    **In summary:**
+        **In summary:**
 
-    ***Public Cloud: Shared infrastructure, flexible and cost-effective.***
+        ***Public Cloud: Shared infrastructure, flexible and cost-effective.***
 
-    ***Private Cloud: Dedicated infrastructure, greater control and security.***
+        ***Private Cloud: Dedicated infrastructure, greater control and security.***
 
-    ***Hybrid Cloud: Combination of both, providing flexibility while keeping sensitive resources protected.***
+        ***Hybrid Cloud: Combination of both, providing flexibility while keeping sensitive resources protected.***
 
 4. **Benefits of Cloud Computing**
 
@@ -127,7 +127,7 @@
 
     - **Reduced Maintenance:** The cloud provider handles much of the hardware maintenance, updates, and infrastructure management, allowing IT teams to focus more on applications and business needs.
 
-    ***In summary: Cloud computing can reduce costs, make systems easier to scale, improve reliability, and allow organizations to deploy applications much faster than traditional data centers.***
+        ***In summary: Cloud computing can reduce costs, make systems easier to scale, improve reliability, and allow organizations to deploy applications much faster than traditional data centers.***
 
 5. **Concerns around Cloud Computing**
 
@@ -149,7 +149,7 @@
 
     - **Unexpected Costs:** Although cloud computing can reduce upfront costs, poor resource management can result in unexpectedly high monthly bills, especially when resources are not properly monitored.
 
-    ***In summary: Cloud computing offers flexibility and convenience, but organizations must carefully manage security, compliance, costs, provider dependence, and availability to reduce potential risks.***
+        ***In summary: Cloud computing offers flexibility and convenience, but organizations must carefully manage security, compliance, costs, provider dependence, and availability to reduce potential risks.***
 
 6. **Basic Cloud Architecture**
 
@@ -209,7 +209,7 @@
 
     - **Serverless:** Code runs when needed without the developer managing the server.
 
-    ***In summary, these concepts help organizations build cloud infrastructure that is reliable, available, flexible, and cost-effective while reducing the amount of infrastructure that developers and IT teams need to manage.***
+        ***In summary, these concepts help organizations build cloud infrastructure that is reliable, available, flexible, and cost-effective while reducing the amount of infrastructure that developers and IT teams need to manage.***
 
 8. **Compliance Considerations in Cloud Computing**
 
@@ -229,13 +229,13 @@
 
     - **Compliance Monitoring**: Organizations should regularly monitor their cloud environments to identify security weaknesses or violations of regulations. Automated monitoring tools can help detect problems and alert administrators.
 
-    **Data Protection and Privacy**: Organizations must understand where their data is stored and how cloud providers handle it. They should follow applicable data protection and privacy laws, especially when handling personal information.
+    - **Data Protection and Privacy**: Organizations must understand where their data is stored and how cloud providers handle it. They should follow applicable data protection and privacy laws, especially when handling personal information.
 
-    **Regular Audits and Assessments**: Regular security assessments and audits help confirm that cloud infrastructure continues to meet required standards and regulations.
+    - **Regular Audits and Assessments**: Regular security assessments and audits help confirm that cloud infrastructure continues to meet required standards and regulations.
 
-    **Examples of Regulations and Standards**
+        **Examples of Regulations and Standards**
 
-    Depending on the organization and location, requirements may include GDPR for personal data protection, HIPAA for certain healthcare information in the United States, PCI DSS for payment card data, or ISO 27001 as an information-security management standard.
+        Depending on the organization and location, requirements may include GDPR for personal data protection, HIPAA for certain healthcare information in the United States, PCI DSS for payment card data, or ISO 27001 as an information-security management standard.
 
     **Importance of Compliance**
 
@@ -289,15 +289,15 @@
 
     - **ECS/Fargate:** Runs the Java application in containers without requiring me to manage the underlying servers.
 
-    **Auto Scaling:** Adds or removes containers according to CPU, memory, or traffic levels.
+    - **Auto Scaling:** Adds or removes containers according to CPU, memory, or traffic levels.
 
-    **RDS:** Stores application data. A Multi-AZ configuration can improve availability.
+    - **RDS:** Stores application data. A Multi-AZ configuration can improve availability.
 
-    **S3:** Can be used for files, images, backups, or other object storage.
+    - **S3:** Can be used for files, images, backups, or other object storage.
 
-    **CloudWatch:** Monitors application and infrastructure performance.
+    - **CloudWatch:** Monitors application and infrastructure performance.
 
-    **IAM:** Controls which users and services can access AWS resources.
+    - **IAM:** Controls which users and services can access AWS resources.
 
     **Example for 500 Peak Users**
 
