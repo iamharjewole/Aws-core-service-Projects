@@ -77,20 +77,26 @@ This means that normal internet traffic from my Kubernetes services can continue
 
 **Role of NGINX**
 
-The NGINX Ingress Controller would not normally be responsible for this connection because NGINX handles incoming traffic into my Kubernetes cluster.
+- The NGINX Ingress Controller would not normally be responsible for this connection because NGINX handles incoming traffic into my Kubernetes cluster.
 
-The Vendor A connection is an outbound connection, so the important components are the Kubernetes network, route tables, source NAT, and Site-to-Site VPN.
+- The Vendor A connection is an outbound connection, so the important components are the Kubernetes network, route tables, source NAT, and Site-to-Site VPN.
 
 **Why this meets Vendor A's requirements**
 
 This design satisfies the requirements because:
 
-The connection to Vendor A travels through an encrypted AWS Site-to-Site VPN.
-Kubernetes remains in the private subnet.
-Vendor A only needs to whitelist one private IP address.
-Kubernetes Pods do not need individual public IP addresses.
-Normal internet traffic can continue using my existing NAT Gateway.
-Vendor A traffic can be separated from normal internet traffic using routing rules.
-The source IP presented to Vendor A remains controlled and predictable.
+- The connection to Vendor A travels through an encrypted AWS Site-to-Site VPN.
+
+- Kubernetes remains in the private subnet.
+
+- Vendor A only needs to whitelist one private IP address.
+
+- Kubernetes Pods do not need individual public IP addresses.
+
+- Normal internet traffic can continue using my existing NAT Gateway.
+
+- Vendor A traffic can be separated from normal internet traffic using routing rules.
+
+- The source IP presented to Vendor A remains controlled and predictable.
 
 Therefore, for my AWS project, I would use specific routing + centralized source NAT + AWS Site-to-Site VPN to make all Kubernetes requests to Vendor A appear to originate from one approved private IP address.
