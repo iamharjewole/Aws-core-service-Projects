@@ -28,8 +28,6 @@ My main objective would be to make both websites secure, highly available, scala
 
 Architecture I would use
 
-Proposed AWS architecture
-
                 INTERNET
                     |
             Amazon 53 DNS records
