@@ -121,7 +121,7 @@ This is similar to the VPC architecture I have been working with in my other AWS
 
     This means that the private IP address of my application server does not need to be exposed publicly.
 
-    Why this is useful
+    **Why this is useful**
 
     If someone tried to access my application server directly, the security group would prevent the connection.
 
