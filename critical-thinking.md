@@ -20,245 +20,194 @@ Resource Utilization: Optimize resource allocation by leveraging AWS services su
 
 High Availability: Configure redundancy and failover mechanisms within the infrastructure to ensure high availability of the company websites. Minimize downtime and ensure uninterrupted service for end-users.
 
-For this project, I would implement one AWS architecture that hosts both websites separately while using reverse-proxy/load-balancing layers to protect and distribute traffic to the application servers.
+### Solution
+
+For my project, I would design an AWS environment for two company websites: an e-commerce website and a CMS/blog website. The e-commerce website would handle sensitive customer and transaction information, while the CMS would mainly publish articles, images and blog content.
+
+My main objective would be to make both websites secure, highly available, scalable and cost-effective without giving every server direct exposure to the Internet.
+
+Architecture I would use
 
 Proposed AWS architecture
 
                 INTERNET
                     |
-            Amazon Route 53
-                DNS records
+            Amazon 53 DNS records
              /                  \
             /                    \
-    shop.company.com       blog.company.com
+    shop.company.com       blog.mycompany.com
             |               |
-        AWS WAF            AWS WAF
+        CloudFront      CloudFront  
+            |               |
+            WAF            WAF
             |               |
     Application Load      Application Load
     Balancer (ALB)        Balancer (ALB)
-        |                       |
+            |                       |
     Reverse Proxy Layer   Reverse Proxy Layer
-    
-    EC2 Auto Scaling Group  EC2 Auto Scaling Group
-        (Nginx/Apache)      (Nginx/Apache)
-         /    \                /    \
-        /      \              /      \
-    Web/App 1 Web/App 2 CMS/App 1  CMS/App 2
-    |          |          |          |
-    +----------+          +----------+
-        |                       |
-    Amazon RDS              Amazon RDS
-    (E-commerce DB)          (CMS DB)
+        Nginx EC2           Nginx EC2
+            |                   |
+     +------+-----+         +-----+-----+
+     |            |         |           |
+    App Server App Ser.   CMS Ser.  CMS Ser.
+    |          |            |          |
+    +----------+            +----------+
+         |                       |
+    E-commerce RDS             CMS RDS
 
-For production, I would place the databases in private subnets, while the public-facing load balancers are in public subnets and the EC2 application/reverse-proxy instances are isolated from direct Internet access as much as practical.
+I would place these resources inside my AWS VPC and separate them into public and private subnets.
 
-**How reverse proxy helps**
-
-For the e-commerce website, Nginx can act as the reverse proxy in front of the application servers. It can:
-
-- Hide the private IP addresses of the application servers.
-- Accept HTTPS connections and forward requests internally.
-- Reject malformed or unwanted requests.
-- Rate-limit suspicious traffic.
-- Cache suitable static content.
-- Compress responses.
-- Distribute requests across application instances.
-- Prevent users from directly accessing the application servers.
-
-For example:
-
-    server {
-    listen 80;
-    server_name shop.company.com;
-
-    location / {
-        proxy_pass http://ecommerce_backend;
-
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    
-        }
-    }
-
-    upstream ecommerce_backend {
-        server 10.0.2.10:8080;
-        server 10.0.2.11:8080;
-    }
-
-For the CMS website, the same concept can be used, but caching becomes particularly useful because articles, images, CSS, JavaScript and blog pages are frequently requested.
-
-    server {
-    listen 80;
-    server_name blog.company.com;
-
-    location / {
-        proxy_pass http://cms_backend;
-        proxy_cache my_cache;
-        proxy_cache_valid 200 10m;
-        
-        }
-    }
-
-    AWS services I would use
-
-|Requirement|AWS service|
-|----------|------------|
-|DNS|Route 53|
-|Reverse proxy/load balancing| Application Load Balancer + Nginx|
-|Web/application servers|EC2|
-|Automatic scaling|EC2 Auto Scaling|
-|Web protection|AWS WAF|
-|HTTPS certificates|AWS Certificate Manager|
-|E-commerce database|Amazon RDS|
-|CMS database|Amazon RDS|
-|Static files|Amazon S3|
-|Global caching|CloudFront|
-|Monitoring|CloudWatch|
-|Private networking|Amazon VPC|
-|Secrets|AWS Secrets Manager|
-|Serverless tasks|AWS Lambda|
-
-**Security design**
-
-I would divide the VPC into public and private subnets across at least two Availability Zones:
+For example, my VPC could be:
 
     VPC: 10.0.0.0/16
 
-    AZ-A                        AZ-B
+    Public Subnets
+    ├── Public-AZ-A
+    └── Public-AZ-B
 
-    Public subnet             Public subnet
-    10.0.1.0/24               10.0.2.0/24
-    |                             |
-    +------ Application Load -----+
-            Balancer
+    Private Application Subnets
+    ├── Private-App-AZ-A
+    └── Private-App-AZ-B
 
-    Private subnet            Private subnet
-    10.0.11.0/24              10.0.12.0/24
-    |                             |
-    EC2/Nginx                 EC2/Nginx
-    |                             |
-    Application servers  Application servers
+    Private Database Subnets
+    ├── Private-DB-AZ-A
+    └── Private-DB-AZ-B
 
-    Private DB subnet      Private DB subnet
-    10.0.21.0/24           10.0.22.0/24
-       \                       /
-                Amazon RDS
+This is similar to the VPC architecture I have been working with in my other AWS exercises, where I separated public-facing resources from private EC2 instances.
 
-The security groups would follow a simple principle:
+1. **My e-commerce website**
 
-        Internet
-        |
-        v
-    ALB
-        |
-        | TCP 80/443
-        v
-    Nginx/Application EC2
-        |
-        | TCP 3306/5432
-        v
-        RDS
+    For my e-commerce website, security would be my highest priority because the application handles customer information.
 
-The database should not accept connections from the Internet. Its security group should only permit connections from the application tier.
+    I would not expose the EC2 application servers directly to the Internet.
 
-**Scalability**
+    Instead, the request would follow this path:
 
-Each website can have its own Auto Scaling Group:
-
-        E-commerce ASG
+        Customer
             |
-        +---+---+
-        |       |
-        EC2     EC2
-        \       /
-         \     /
-            ALB
-
-and:
-
-        CMS ASG
+            v
+        Route 53
             |
-        +---+---+
-        |       |
-        EC2     EC2
-         \       /
-          \     /
-            ALB
-            
-if traffic increases, Auto Scaling launches additional EC2 instances. When traffic falls, unnecessary instances can be terminated.
+            v
+        AWS WAF
+            |
+            v
+        Application Load Balancer
+            |
+            v
+        Nginx Reverse Proxy
+            |
+            v
+        E-commerce EC2
+            |
+            v
+        Amazon RDS
 
-This avoids permanently running a large number of servers and therefore improves resource utilization and cost efficiency.
+    The Nginx reverse proxy would act as an additional layer between users and my application.
 
-**Performance optimization**
+    For example, if a customer visits:
 
-For the CMS, I would place CloudFront in front of the application because blog content often contains cacheable objects.
+        https://shop.mycompany.com
+
+    the customer does not directly communicate with my application server.
+
+    Instead:
+
+        Customer
+        ↓
+        ALB
+        ↓
+        Nginx
+        ↓
+        E-commerce application
+
+    This means that the private IP address of my application server does not need to be exposed publicly.
+
+    Why this is useful
+
+    If someone tried to access my application server directly, the security group would prevent the connection.
+
+    I could configure the security groups so that:
+
+        Internet → ALB HTTPS  443  ALLOWED
+
+        ALB→ Nginx/EC2 App  port  ALLOWED
+
+        Nginx→ RDS  Database port ALLOWED
+
+        Internet→  RDS            DENIED
+
+    This gives me multiple layers of protection.
+
+2. **My CMS website**
+
+    My second website would be a CMS used for publishing articles and blogs.
+
+    The CMS doesn't handle the same level of sensitive transaction information as my e-commerce platform, so I can focus more heavily on performance and caching.
+
+    The request could follow:
 
         User
         |
         v
+        Route 53
+        |
+        v
         CloudFront
         |
-        +---- cached content
+        v
+        AWS WAF
         |
-        +---- cache miss
-          |
-          v
-         ALB
-          |
-        Nginx
-          |
+        v
+        ALB
+        |
+        v
+        Nginx Reverse Proxy
+        |
+        v
         CMS EC2
+        |
+        v
+        CMS RDS
 
-Static files such as:
+    For example, if someone visits:
 
-- images
-- CSS
-- JavaScript
-- downloadable documents
+        https://blog.mycompany.com/aws-tutorial
 
-can also be stored in Amazon S3 and delivered through CloudFront.
+    CloudFront can serve a cached version of the article instead of sending every request all the way to my EC2 server.
 
-For the e-commerce site, caching needs more care. Public product images and static assets can be cached, but sensitive information such as shopping carts, account pages and payment-related responses should not be cached publicly.
+    This is particularly useful for my CMS because the same articles may be requested by thousands of visitors.
 
-**High availability**
+3. **How I would use Nginx as the reverse proxy**
 
-I would deploy the infrastructure across multiple Availability Zones rather than relying on a single EC2 instance.
+    On my EC2 instances, I could install Nginx:
 
-For example:
+        sudo dnf update -y
+        sudo dnf install nginx -y
+        sudo systemctl enable nginx
+        sudo systemctl start nginx
 
-                 Route 53
-                    |
-                 CloudFront
-                    |
-                   ALB
-              _____|_____
-             /           \
-          AZ-A           AZ-B
-           |               |
-        EC2/Nginx       EC2/Nginx
-           |               |
-           +-------+-------+
-                   |
-                  RDS
-             Multi-AZ setup
+    I would then configure Nginx to forward requests to my application.
 
-If an EC2 instance fails, the load balancer can stop sending traffic to it and Auto Scaling can replace it.
+    For example:
 
-If an Availability Zone experiences a problem, resources in the other AZ can continue serving traffic.
+        server {
+            listen 80;
+            server_name shop.mycompany.com;
 
-**Cost optimization**
+        location / {
+            proxy_pass http://ecommerce_backend;
 
-I would avoid creating unnecessarily large EC2 instances. Instead:
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            
+            }
+        }
 
-- Start with appropriately sized instances.
-- Monitor CPU, memory and network utilization with CloudWatch.
-- Configure Auto Scaling.
-- Scale out during traffic peaks.
-- Scale in during quiet periods.
-- Use S3 for inexpensive object storage.
-- Use CloudFront caching to reduce requests reaching EC2.
-- Use RDS rather than maintaining database servers manually.
-- Consider Savings Plans/Reserved capacity for predictable workloads.
-- Use Spot Instances only for workloads that can tolerate interruption.
+        upstream ecommerce_backend {
+            server 10.0.11.10:8080;
+            server 10.0.12.10:8080;
+
+        }
