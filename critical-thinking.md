@@ -26,32 +26,9 @@ For my project, I would design an AWS environment for two company websites: an e
 
 My main objective would be to make both websites secure, highly available, scalable and cost-effective without giving every server direct exposure to the Internet.
 
-Architecture I would use
+**Architecture I would use**
 
-                INTERNET
-                    |
-            Amazon 53 DNS records
-             /                  \
-            /                    \
-    shop.company.com       blog.mycompany.com
-            |               |
-        CloudFront      CloudFront  
-            |               |
-            WAF            WAF
-            |               |
-    Application Load      Application Load
-    Balancer (ALB)        Balancer (ALB)
-            |                       |
-    Reverse Proxy Layer   Reverse Proxy Layer
-        Nginx EC2           Nginx EC2
-            |                   |
-     +------+-----+         +-----+-----+
-     |            |         |           |
-    App Server App Ser.   CMS Ser.  CMS Ser.
-    |          |            |          |
-    +----------+            +----------+
-         |                       |
-    E-commerce RDS             CMS RDS
+![Draw.io](Images/1.png)
 
 I would place these resources inside my AWS VPC and separate them into public and private subnets.
 
@@ -395,27 +372,7 @@ This is similar to the VPC architecture I have been working with in my other AWS
 
 My completed AWS architecture would therefore look like this:
 
-                        INTERNET
-                            |
-                       Route 53
-                     /           \
-                    /             \
-             E-commerce           CMS
-                  |                 |
-             CloudFront        CloudFront
-                  |                 |
-                 WAF               WAF
-                  |                 |
-                 ALB               ALB
-                  |                 |
-             Nginx/EC2        Nginx/EC2
-              /      \          /      \
-            EC2      EC2      EC2      EC2
-              \      /          \      /
-             Auto Scaling     Auto Scaling
-                  |                 |
-                RDS               RDS
-             Private DB         Private DB
+![Draw.io](Images/2.png)
 
 ### **Conclusion**
 
